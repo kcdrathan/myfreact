@@ -28,7 +28,7 @@ router.post("/register", (req, res) => {
                     avatar: avatar
                 })
 
-                bcrypt.genSalt(20, (err, salt) => {
+                bcrypt.genSalt(5, (err, salt) => {
                     bcrypt.hash(req.body.password, salt, (err, hash) => {
                         if(err) throw err;
                         newUser.password = hash;
@@ -36,12 +36,28 @@ router.post("/register", (req, res) => {
                             .save()
                             .then(user => res.status(200).json(user))
                             .catch(err => res.send(err))
+                    });
+                });
+            }
+        });
+});
+
+router.post("/login", (req, res) => {
+    const email = req.body.email;
+    const password = req.body.password;
+    User.findOne({email})
+        .then(user => {
+            if(!user) {
+                res.status(404).json("User doesn't exist")
+            } else {
+                bcrypt.compare(password, user.password)
+                    .then(match => {
+                        if (match) res.status(200).json({msg: "User exists"})
+                        else res.status(400).json({password: "Password incorrect"})
                     })
-                })
+                    .catch(err => res.status(500).json({err: err}))
             }
         })
-
-    
 })
 
 module.exports = router;
