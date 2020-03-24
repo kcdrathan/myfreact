@@ -22,8 +22,8 @@ module.exports = function validateLoginInput(data) {
         errors.password = "Password is required";
     }
 
-    console.log("data: %j", data)
-    console.log("dcopy: %j",dcopy)
+    // console.log("data: %j", data)
+    // console.log("dcopy: %j",dcopy)
 
     return {
         errors,

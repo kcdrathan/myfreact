@@ -21,7 +21,7 @@ router.post("/register", (req, res) => {
     if (isValid) {
         return res.status(400).json(errors)
     }    
-    console.log("check")
+    // console.log("check")
 
     User.findOne({ email: req.body.email})
         .then(user => {
@@ -61,7 +61,7 @@ router.post("/login", (req, res) => {
     if (isValid) {
         return res.status(400).json(errors)
     } 
-    console.log("check")
+    // console.log("check")
 
     const email = req.body.email;
     const password = req.body.password;

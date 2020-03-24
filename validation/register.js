@@ -45,8 +45,8 @@ module.exports = function validateRegisterInput(data) {
         errors.cpassword = "Passwords doesn't match";
     }
 
-    console.log("data: %j", data)
-    console.log("dcopy: %j",dcopy)
+    // console.log("data: %j", data)
+    // console.log("dcopy: %j",dcopy)
 
     return {
         errors,
