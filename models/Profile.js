@@ -58,7 +58,7 @@ const ProfileSchema = new Schema({
                 type: Boolean,
                 default: false
             },
-            dessription: {
+            description: {
                 type: String
             },
         }
@@ -88,7 +88,7 @@ const ProfileSchema = new Schema({
                 type: Boolean,
                 default: false
             },
-            dessription: {
+            description: {
                 type: String
             },
 

@@ -5,8 +5,6 @@ const isEmpty = require("./is-empty");
 module.exports = function validateProfileInput(data) {
     let errors = {}
 
-    console.log("data %j", data)
-
     const dcopy = {
         handle: Object.keys(data).includes("handle") ? data.handle : "",
         status: Object.keys(data).includes("status") ? data.status : "",
