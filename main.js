@@ -12,9 +12,12 @@ const app = express();
 const db = require("./config/keys");
 
 mongoose
-    .connect(db.mongoURI)
+    .connect(db.mongoURI, {
+        useUnifiedTopology: true,
+        useNewUrlParser: true,
+        })
     .then(() => console.log("MongoDB connected"))
-    .catch(err => console.log(err));
+    .catch(err => console.log(`DB connection error ${err}`));
 
 app.use(passport.initialize());
 

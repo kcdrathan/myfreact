@@ -3,6 +3,8 @@ const router = express.Router();
 const mongoose = require("mongoose");
 const passport = require("passport");
 
+const validateProfileInput = require("../../validation/profile");
+
 const Profile = require("../../models/Profile")
 const User = require("../../models/User")
 
@@ -13,6 +15,7 @@ router.get("/tests", (req, res) => {
 router.get("/", passport.authenticate("jwt", { session: false }), (req, res) => {
     let errors = {}
     Profile.findOne({user: req.user.id})
+        .populate("user", ["name", "avatar"])
         .then( profile => {
             if (!profile) {
                 errors.noprofile = "User has no profile"
@@ -26,7 +29,13 @@ router.get("/", passport.authenticate("jwt", { session: false }), (req, res) => 
 })
 
 router.post("/", passport.authenticate("jwt", {session: false}), (req, res) => {
-    let errors = {}
+    
+
+    const {errors, isValid} = validateProfileInput(req.body)
+    if(isValid) {
+        return res.status(400).json(errors)
+    }
+
     const profileFields = {}
     profileFields.user = req.user.id
     if (req.body.handle) profileFields.handle = req.body.handle
@@ -58,11 +67,11 @@ router.post("/", passport.authenticate("jwt", {session: false}), (req, res) => {
                     })
             } else {
                 // Check if handle exists
-                profile.findOne({handle: profileFields.handle})
+                Profile.findOne({handle: profileFields.handle})
                     .then(profile => {
                         if (profile) {
                             errors.handle = "This handle already exists"
-                            return ReadableStream.status(400).json(errors)
+                            return res.status(400).json(errors)
                         }
                         // Create
                         new Profile(profileFields).save().then(profile => res.json(profile))
