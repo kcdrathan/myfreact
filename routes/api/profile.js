@@ -14,6 +14,8 @@ router.get("/tests", (req, res) => {
     res.json({ msg: "profile works" });
 });
 
+// GET profile
+
 router.get("/", passport.authenticate("jwt", { session: false }), (req, res) => {
     let errors = {}
     Profile.findOne({user: req.user.id})
@@ -30,6 +32,8 @@ router.get("/", passport.authenticate("jwt", { session: false }), (req, res) => 
         })
 })
 
+// GET all profiles
+
 router.get("/profiles/all", (req, res) => {
     const errors = {}
 
@@ -45,6 +49,7 @@ router.get("/profiles/all", (req, res) => {
         .catch(err => res.status(404).json({profiles: "There are no profiles"}))
 })
 
+// GET profile by handle
 
 router.get("/handle/:handle", (req, res) => {
     let errors = {}
@@ -61,6 +66,8 @@ router.get("/handle/:handle", (req, res) => {
         .catch(err => res.status(404).json({profile: "There is no profile for this user"}))
 })
 
+// GET profile by userID
+
 router.get("/user/:user_id", (req, res) => {
     let errors = {}
 
@@ -75,6 +82,8 @@ router.get("/user/:user_id", (req, res) => {
         })
         .catch(err => res.status(404).json({profile: "There is no profile for this user"}))
 })
+
+// CREATE or UPDATE profile
 
 router.post("/", passport.authenticate("jwt", {session: false}), (req, res) => {
     
@@ -92,6 +101,7 @@ router.post("/", passport.authenticate("jwt", {session: false}), (req, res) => {
     if (req.body.location) profileFields.location = req.body.location
     if (req.body.bio) profileFields.bio = req.body.bio
     if (req.body.status) profileFields.status = req.body.status
+
     // Skills (array)
     if (typeof skills !== undefined) {
         profileFields.skills = req.body.skills.split(",")
@@ -102,8 +112,9 @@ router.post("/", passport.authenticate("jwt", {session: false}), (req, res) => {
     if (req.body.twitter) profileFields.social.twitter = req.body.twitter
     if (req.body.linkedIn) profileFields.social.linkedIn = req.body.linkedIn
     if (req.body.facebook) profileFields.social.facebook = req.body.facebook
+    if (req.body.github) profileFields.social.github = req.body.github
     
-    console.log(profileFields)
+    // console.log(profileFields)
 
     Profile.findOne({ user: req.user.id })
         .then(profile => {
@@ -127,6 +138,8 @@ router.post("/", passport.authenticate("jwt", {session: false}), (req, res) => {
             }
         })
 })
+
+// POST EXP and EDU
 
 router.post("/experience", passport.authenticate("jwt", {session: false}), (req, res) => {
 
@@ -176,6 +189,52 @@ router.post("/education", passport.authenticate("jwt", {session: false}), (req, 
             profile.education.unshift(newEdu)
 
             profile.save().then(profile => res.json(profile))
+        })
+})
+
+// DELETE EXP and EDU 
+
+router.delete("/experience/:exp_id", passport.authenticate("jwt", {session: false}), (req, res) => {
+    
+    Profile.findOne({ user: req.user.id })
+    .then(profile => {
+        const removeIndex = profile.experience
+            .map(item => item.id)
+            .indexOf(req.params.exp_id)
+
+        profile.experience.splice(removeIndex, 1)
+
+        profile.save().then(profile => res.json(profile))
+    })
+    .catch(err => res.ststus(404).json(err))
+})
+
+
+router.delete("/education/:edu_id", passport.authenticate("jwt", {session: false}), (req, res) => {
+    
+    Profile.findOne({ user: req.user.id })
+    .then(profile => {
+        const removeIndex = profile.education
+            .map(item => item.id)
+            .indexOf(req.params.edu_id)
+
+        profile.education.splice(removeIndex, 1)
+
+        profile.save().then(profile => res.json(profile))
+    })
+    .catch(err => res.ststus(404).json(err))
+})
+
+
+// DELETE user and his profile
+
+router.delete("/", passport.authenticate("jwt", { session: true }), (req, res) => {
+    Profile.findOneAndRemove({ user: req.user.id })
+        .then(() => {
+            User.findOneAndRemove({ _id: req.user.id })
+                .then(() => {
+                    res.json({ success: true })
+                })
         })
 })
 

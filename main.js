@@ -11,6 +11,7 @@ const app = express();
 
 const db = require("./config/keys");
 
+mongoose.set('useFindAndModify', false);
 mongoose
     .connect(db.mongoURI, {
         useUnifiedTopology: true,

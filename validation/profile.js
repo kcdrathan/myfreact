@@ -1,6 +1,17 @@
 const validator = require("validator");
 
 const isEmpty = require("./is-empty");
+const Profile = require("../models/Profile")
+
+function validURL(data, key, errors) {
+    if (Object.keys(data).includes(key) &&
+        !isEmpty(data[key] || "")) {
+        if (!validator.isURL(data[key] || "")) {
+            errors.website = "URL is not valid"
+        }
+    }
+    return errors
+}
 
 module.exports = function validateProfileInput(data) {
     let errors = {}
@@ -33,34 +44,8 @@ module.exports = function validateProfileInput(data) {
         }
     }
 
-    if (Object.keys(data).includes("youtube") && !isEmpty(data.youtube || "")) {
-        if (!validator.isURL(data.youtube || "")) {
-            errors.youtube = "URL is not valid"
-        }
-    }
-
-    if (Object.keys(data).includes("instagram") && !isEmpty(data.instagram || "")) {
-        if (!validator.isURL(data.instagram || "")) {
-            errors.instagram = "URL is not valid"
-        }
-    }
-
-    if (Object.keys(data).includes("linkedIn") && !isEmpty(data.linkedIn || "")) {
-        if (!validator.isURL(data.linkedIn || "")) {
-            errors.linkedIn = "URL is not valid"
-        }
-    }
-
-    if (Object.keys(data).includes("facebook") && !isEmpty(data.facebook || "")) {
-        if (!validator.isURL(data.facebook || "")) {
-            errors.facebook = "URL is not valid"
-        }
-    }
-
-    if (Object.keys(data).includes("twitter") && !isEmpty(data.twitter || "")) {
-        if (!validator.isURL(data.twitter)) {
-            errors.twitter = "URL is not valid"
-        }
+    for (const socialKey of Object.keys(Profile.schema.tree.social)) {
+        errors = validURL(data, socialKey, errors)
     }
 
     // console.log("data: %j", data)
