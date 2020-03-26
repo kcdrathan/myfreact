@@ -18,7 +18,7 @@ router.get("/tests", (req, res) => {
 router.post("/register", (req, res) => {
 
     const {errors, isValid} = validateRegisterInput(req.body)
-    if (isValid) {
+    if (!isValid) {
         return res.status(400).json(errors)
     }    
     // console.log("check")
@@ -58,7 +58,7 @@ router.post("/register", (req, res) => {
 router.post("/login", (req, res) => {
 
     const {errors, isValid} = validateLoginInput(req.body)
-    if (isValid) {
+    if (!isValid) {
         return res.status(400).json(errors)
     } 
     // console.log("check")
@@ -77,7 +77,8 @@ router.post("/login", (req, res) => {
                             const payload = {
                                 id: user.id,
                                 name: user.name,
-                                email: user.email
+                                email: user.email,
+                                avatar: user.avatar
                             }
 
                             jwt.sign(
