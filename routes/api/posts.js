@@ -77,40 +77,117 @@ router.delete("/madness/:id", (req, res) => {
 })
 
 router.post("/like/:id", passport.authenticate("jwt", { session: false }), (req, res) => {
-    Profile.findOne({user: req.user.id})
-        .then(profile => {
-            Post.findById(req.params.id)
-                .then(post => {
-                    if (post.likes.filter(like => like.user.toString() === req.user.id).length > 0) {
-                        return res.status(400).json({alreadyliked: "User already liked this post"})
-                    }
+    Post.findById(req.params.id)
+        .then(post => {
+            if (post) {
+                const liked = (post.likes.filter(like => like.user.toString() === req.user.id).length != 0)
+                const unliked = (post.unlikes.filter(unlike => unlike.user.toString() === req.user.id).length != 0)
 
+                // console.log("liked: " + liked + ", unliked: " + unliked)
+
+                if (!liked && !unliked) {
                     post.likes.unshift({user: req.user.id})
-
                     post.save().then(post => res.json(post))
-                })
-                .catch(err => res.status(404).json({postnotfound:"No post found"}))
+                } else if (!liked && unliked) {
+                    res.json({alreadyunliked: "User already unliked this post"})
+                } else if (liked && !unliked) {
+                    const removeIndex = post.likes
+                            .map(item => item.user.toString())
+                            .indexOf(req.user.id)
+                        // console.log(removeIndex)
+                        post.likes.splice(removeIndex, 1)
+
+                        post.save().then(post => res.json(post))
+                } else {
+                    res.json({failed: "Cannot accept the request"})
+                }
+            }
+            else {
+                console.log("not valid post")
+            }
+        })
+        .catch(err => {
+            // console.log(err)
+            res.status(404).json({error: err.toString(), postnotfound:"No post found"})
         })
 })
 
 router.post("/unlike/:id", passport.authenticate("jwt", { session: false }), (req, res) => {
-    Profile.findOne({user: req.user.id})
-        .then(profile => {
-            Post.findById(req.params.id)
-                .then(post => {
-                    if (post.likes.filter(unlike => unlike.user.toString() === req.user.id).length === 0) {
-                        return res.status(400).json({notliked: "User hasn't liked this post yet"})
-                    }
+    Post.findById(req.params.id)
+        .then(post => {
+            if (post) {
+                const liked = post.likes.filter(like => like.user.toString() === req.user.id).length != 0
+                const unliked = post.unlikes.filter(unlike => unlike.user.toString() === req.user.id).length != 0
 
-                    const removeIndex = post.likes
-                        .map(item => item.user.toString())
-                        .indexOf(req.user.id)
-                    console.log(removeIndex)
-                    post.likes.splice(removeIndex, 1)
+                // console.log("liked: " + liked + ", unliked: " + unLiked)
+
+                if (!liked && !unliked) {
+                    post.unlikes.unshift({user: req.user.id})
                     post.save().then(post => res.json(post))
-                })
-                .catch(err => res.status(404).json({postnotfound:"No post found"}))
+                } else if (!liked && unliked) {
+                    const removeIndex = post.unlikes
+                            .map(item => item.user.toString())
+                            .indexOf(req.user.id)
+                        // console.log(removeIndex)
+                    post.unlikes.splice(removeIndex, 1)
+
+                    post.save().then(post => res.json(post))
+                } else if (liked && !unliked) {
+                    res.json({alreadyliked: "User alreadyliked this post"})
+                } else {
+                    res.json({failed: "Cannot accept the request"})
+                }
+            }
+            else {
+                console.log("not valid post")
+            }
         })
+        .catch(err => res.status(404).json({err: err.toString(), postnotfound:"No post found"}))
+})
+
+
+router.post("/comment/:id", passport.authenticate("jwt", { session: false }), (req, res) => {
+
+    const {errors, isValid} = validatePostInput(req.body)
+
+    if(!isValid) {
+        return res.status(400).json(errors)
+    }
+
+    Post.findById(req.params.id)
+        .then(post => {
+            newComment = {
+                text: req.body.text,
+                name: req.body.name,
+                avatar: req.user.avatar,
+                user: req.user.id
+}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
+            post.comment.unshift(newComment)
+            post.save().then(post => res.json(post))                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+        })
+        .catch(err => res.status(404).json({postnotfound:"No Post found"}))
+})
+
+router.delete("/comment/:id/:comment_id", passport.authenticate("jwt", {session: false}), (req, res) => {
+    Post.findById(req.params.id)
+        .then(post => {
+            if (post) {
+
+                if (post.comment.filter(comment => comment._id.toString() === req.params.comment_id).length === 0) {
+                    return res.json({commentdoesnotexist: "Comment doesn't exist"})
+                }
+
+                const removeIndex = post.comment
+                    .map(item => item._id.toString())
+                    .indexOf(req.params.comment_id)
+                
+                post.comment.splice(removeIndex, 1)
+
+                post.save().then(post => res.json(post))
+            }
+        })
+        .catch(err => res.status(404).json({onpostfound: "No Post found"}))
+            
 })
 
 module.exports = router;
