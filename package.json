@@ -1,12 +1,17 @@
 {
     "name": "myfreact",
     "version": "1.0.0",
-    "description": "Node.js example server starter project",
-    "main": "src/index.js",
+    "description": "",
+    "main": "main.js",
     "scripts": {
-        "start": "nodemon src/index.js"
+        "client-install": "yarn install --cwd client",
+        "start": "node main.js",
+        "server": "nodemon main.js",
+        "client": "yarn --cwd client start",
+        "dev": "concurrently \"yarn start\" \"yarn client\""
     },
     "dependencies": {
+        "@testing-library/jest-dom": "^5.3.0",
         "bcryptjs": "2.4.3",
         "body-parser": "1.19.0",
         "concurrently": "5.1.0",
