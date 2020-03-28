@@ -1,7 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
-const passport = require("passport")
+const passport = require("passport");
 
 const users = require("./routes/api/users");
 const posts = require("./routes/api/posts");
@@ -11,20 +11,20 @@ const app = express();
 
 const db = require("./config/keys");
 
-mongoose.set('useFindAndModify', false);
+mongoose.set("useFindAndModify", false);
 mongoose
-    .connect(db.mongoURI, {
-        useUnifiedTopology: true,
-        useNewUrlParser: true,
-        })
-    .then(() => console.log("MongoDB connected"))
-    .catch(err => console.log(`DB connection error ${err}`));
+  .connect(db.mongoURI, {
+    useUnifiedTopology: true,
+    useNewUrlParser: true
+  })
+  .then(() => console.log("MongoDB connected"))
+  .catch(err => console.log(`DB connection error ${err}`));
 
 app.use(passport.initialize());
 
 require("./config/passport")(passport);
 
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 app.use("/api/users", users);

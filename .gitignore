@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Node build artifacts
 node_modules
 npm-debug.log
@@ -10,3 +11,7 @@ npm-debug.log
 # Docker
 Dockerfile
 docker-compose.yml
+=======
+node_modules
+.codesandbox
+>>>>>>> 5d50128003e3934d4f3d60811158b6cba7356bcb
