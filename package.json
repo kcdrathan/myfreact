@@ -8,7 +8,7 @@
         "start": "node main.js",
         "server": "nodemon main.js",
         "client": "yarn --cwd client start",
-        "dev": "concurrently \"yarn start\" \"yarn client\""
+        "god": "concurrently \"yarn start\" \"yarn client\""
     },
     "dependencies": {
         "@testing-library/jest-dom": "^5.3.0",
