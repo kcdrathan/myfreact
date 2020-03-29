@@ -13,12 +13,12 @@ const db = require("./config/keys");
 
 mongoose.set("useFindAndModify", false);
 mongoose
-  .connect(db.mongoURI, {
-    useUnifiedTopology: true,
-    useNewUrlParser: true
-  })
-  .then(() => console.log("MongoDB connected"))
-  .catch(err => console.log(`DB connection error ${err}`));
+    .connect(db.mongoURI, {
+        useUnifiedTopology: true,
+        useNewUrlParser: true
+    })
+    .then(() => console.log("MongoDB connected"))
+    .catch(err => console.log(`DB connection error ${err}`));
 
 app.use(passport.initialize());
 

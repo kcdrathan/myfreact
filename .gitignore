@@ -1,17 +1,13 @@
-<<<<<<< HEAD
 # Node build artifacts
-node_modules
+node_modules/
 npm-debug.log
 
 # Local development
 *.env
 *.dev
 .DS_Store
+.codesandbox
 
 # Docker
 Dockerfile
 docker-compose.yml
-=======
-node_modules
-.codesandbox
->>>>>>> 5d50128003e3934d4f3d60811158b6cba7356bcb
