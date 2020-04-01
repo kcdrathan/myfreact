@@ -3,15 +3,18 @@ import React, { Component } from 'react'
 class Navbar extends Component {
     render() {
         return (
-            <nav className = "navbar navbar-expand-sm navbar-dark bg-dark mb-4">
-                <div className="container">
-                    <a className="navbar-brand" href="landing.html">DevConnecter</a>
-                    <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#mobile-nav">
-                        <span className="navbar-toggle-icon"></span>
-                    </button>
-                </div>
+            <nav className="navbar bg-dark">
+                <h1 className="large">
+                    <a href="dashboard.html">
+                        <i className="fas fa-code"></i>Dev Connector
+                    </a>
+                </h1>
+                <ul>
+                    <li><a href="profiles.html">Developers</a></li>
+                    <li><a href="register.html">Register</a></li>
+                    <li><a href="login.html">Login</a></li>
+                </ul>
             </nav>
-
         )
     }
 }
